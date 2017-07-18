@@ -1,0 +1,372 @@
+<!--panel edition contrat-->
+<div class="panel owner-panel ">
+  <!-- Edition Client -->
+  <edition-client client="contrat.contratHeader.client" entity="contrat"></edition-client>
+  <!-- Paramere de Contrat -->
+  <div class="panel owner-panel ">
+    <div class="panel-heading panel-title-box title-box bg-color-title-panel-grey">
+      <div class="row">
+        <div class="col-md-1  icone-size-large no-padding-right align-center-icon"
+             >
+          <a class="icon-pointer" data-toggle='collapse' ng-click="setCollapsedParametre()"
+             data-target="#panel-paramatre-conrat" style=" color: #646464">
+            <i class="material-icons">apps</i>
+          </a>
+        </div>
+        <div class="col-md-9 title-font-size-large no-margin no-padding-left"
+             style="color: #646464; position: relative;top: 50%;transform: translateY(23%); margin-top: -6px !important;"> {{ 'contrat.edition.parametrecontrat.title' | translate }}
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="panel-body  panel-body-edition-facture no-padding collapse" collapse="{{isCollapsedParametre}}"
+         id="panel-paramatre-conrat">
+      <div class="panel owner-panel">
+        <div ng-include="'modules/contrats/client/includes/parametre-contrat.client.include.html'"></div>
+      </div>
+
+
+    </div>
+  </div>
+
+  <!-- Action Borad-->
+  <div class="panel-heading panel-title-edition-facture  panel-title-box title-box bg-color-title-panel-dark-blue  ">
+    <div class="row">
+      <div class="col-md-3 no-padding" >
+        <div class="col-md-2 col-md-offset-1  icone-size-large no-padding-right align-center-icon2">
+          <a class="icon-pointer" data-target="#panel-reference-Client" style=" color: #fff">
+            <i class="material-icons">receipt</i>
+          </a>
+        </div>
+        <div class="col-md-8 title-font-size-large no-margin "
+             style="top: -3px; padding-left: 25px;color: #fff; position: relative;transform: translateY(15%);"> {{ 'contrat.name' |
+          translate }}
+        </div>
+        <div class="clearfix"></div>
+      </div>
+      <div class="col-md-4 no-padding-left no-padding-right have-padding-top">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-2 date-icone-facture no-padding text-right" style="color: #B8B8B8;padding-top: 5px"><i
+              class="material-icons">store</i></div>
+            <div class="col-md-10 no-padding text-left no-padding text-left" style="padding-top: 5px">
+              <div class="">
+                <!-- <a class="" href="#" class="dropdown-toggle"> -->
+                <input ng-disabled="valueReadOnly || (parseNumberInvoiceEdited() !== 0)" type="text"
+                       ng-model="contrat.contratHeader.establishment.nomEtablissement" data-toggle="dropdown" role="button"
+                       aria-expanded="false" class="dropdown-toggle none-radius form-control" style="" readonly/>
+                <!-- </a> -->
+                <ul class="dropdown-menu ">
+                  <input ng-disabled="valueReadOnly" type="text" class=" form-control"
+                         placeholder="{{'main.form.shearch.title' | translate }} ..." ng-model="searchEtblm"
+                         style="display: none;"/>
+                  <li ng-repeat="etablissement in etablissements">
+                    <a ng-disabled="valueReadOnly" class="etablissement-no-active" href="#"
+                       ng-class="{'etablissement-active': etablissement.selected}"
+                       style="padding-top: 7px;padding-top: 7px;">
+                      <span class="have-padding-top have-padding-bottom" style="font-weight: bold;">{{etablissement.nomEtablissement }}</span>
+                    </a>
+
+                    <ul class="list-unstyled">
+                      <li ng-repeat="model in etablissement.models" class="marque-no-active"
+                          ng-class="{'marque-active': model.selected === true}" style="border-bottom: solid 1px #eee">
+                        <div>
+                          <input ng-disabled="valueReadOnly" type="checkbox" name="selectedMarque"
+                                 ng-model="model.selected" class=" form-control col-md-2"
+                                 style="height: 20px;width: 33px"
+                                 ng-click="changeSateEtablissement(etablissement,model);">
+                          <label class="col-md-10" style="padding-top: 7px">{{model.name}}</label>
+                          <div class="clearfix"></div>
+                        </div>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+
+        <div class="col-md-3"></div>
+
+        <div class="clearfix"></div>
+      </div>
+      <div class="col-md-5 no-padding-left no-pad
+      ding-right ">
+        <div class=" row menu-edition no-margin">
+          <div class="">
+            <ul class="list-unstyled">
+              <li ng-show="contrat.code" class="col-md-1 no-padding item-menu-edition-facture pull-right"  ng-class=" !valueReadOnly  ?  ''  : 'disabled-btn' "><a href="#" ng-click="actionEditNF()" title="{{ 'contrat.edition.editerNextFacture.title' | translate }}"><span><i class="material-icons">open_in_new</i>  </span> </a></li>
+              <li  class="col-md-1 no-padding item-menu-edition-facture pull-right" ng-class=" !valueReadOnly  ?  ''  : 'disabled-btn' "><a href="#" type="submit" ng-click="save()" title="{{ 'contrat.edition.validation.title' | translate }}" ng-desabled ><span><i class="material-icons">save</i>  </span> </a></li>
+              <li ng-show="contrat.code" ng-class="regextest  ?  ''  : 'disabled-btn' " class="col-md-1 no-padding item-menu-edition-facture pull-right"><a href="#" ng-click="clocturer()" title="{{ 'contrat.edition.cloturer.title' | translate }}">
+                <span ng-show="contrat.contratHeader.stateContrat" ng-click="changeStatutContrat(0)"><i class="material-icons">check_box</i>  </span>
+                <span ng-show="!contrat.contratHeader.stateContrat"><i class="material-icons" ng-click="changeStatutContrat(1)">check_box_outline_blank</i>  </span>
+              </a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!--Panneau de recherche de client et de type de facturation-->
+  <div class="col-md-12 facture-shearch-panel" style="padding-top: 6px" >
+    <div class="row">
+
+      <div class="col-md-7" >
+        <form ng-submit="shearchClient()">
+          <div class="col-md-5" style="">
+            <input ng-disabled="valueReadOnly" type="text" placeholder="{{ 'contrat.edition.codeContrat.title' | translate }}"  class="form-control" name="codeContrat" ng-model="contrat.contratHeader.contratCode"  />
+          </div>
+          <div class="col-md-7 no-padding-right" >
+            <!-- Filter on clients -->
+
+            <div class="input-group" style="width:100%;" >
+              <input  ng-model="scherchClient.name" id="id-nom-client" placeholder="{{'main.form.shearch.title' | translate }} ..."  ng-disabled="valueReadOnly || (parseNumberInvoiceEdited() !== 0)" type="search" name="shearchClient" class="form-control dropdown-toggle" autocomplete="off"  data-toggle="dropdown" role="button" ng-keyup="[searchOver($event), loadClients($event)]"/>
+                      <span class="input-group-btn">
+                       <button type="button" class="btn button-shearch-client-active" ng-click="showSearchPanel();" style="height: 32px;"   ng-disabled="valueReadOnly || (contrat.type.typeInvoice === 2 && contrat.link) || (parseNumberInvoiceEdited() !== 0)">
+                         <span class="glyphicon glyphicon-search"></span>
+                       </button>
+                      </span>
+              <ul ng-show="!(valueReadOnly || (contrat.type.typeInvoice === 2 && contrat.link))" class="dropdown-menu " style="max-height:200px;overflow-y: scroll;overflow-x: hidden;width: 100%;">
+                <li class=" "  ng-show="!scherchClient.searchCode">
+                  <div class=" have-padding-top have-padding-bottom etablissement-active" style="font-weight: bold;">{{ 'facture.editionFacture.searchFacture.resNom.title' | translate }}</div>
+
+                  <ul class="list-unstyled">
+                    <li ng-repeat="client in clients | filterstartwith:{nomClient:scherchClient.name}" ng-click="foundedClient(client)" class="marque-no-active" style="border-bottom: solid 1px #eee">
+                      <div>
+                        <label class="" style="padding-top: 2px">{{client.nomClient}} {{client.prenomClient}} </label>
+                        <div class="clearfix"></div>
+                      </div>
+                    </li>
+                  </ul>
+                </li>
+                <li class="have-margin-top" style="" ng-show="scherchClient.searchCode">
+                  <div class=" have-padding-top have-padding-bottom etablissement-active" style="font-weight: bold;">{{ 'facture.editionFacture.searchFacture.resCode.title' | translate }}</div>
+                  <ul class="list-unstyled">
+                    <li ng-repeat="client in clients | filterstartwith:{codeClient:scherchClient.name} " ng-click="foundedClient(client)" class="marque-no-active" style="border-bottom: solid 1px #eee">
+                      <div>
+                        <label class="" style="padding-top: 2px">{{client.codeClient}}</label>
+                        <div class="clearfix"></div>
+                      </div>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="col-md-5">
+        <div class="col-md-4 text-right" style="padding-top: 8px;">
+          {{ 'facture.editionFacture.typeFacturation.title' | translate }}
+        </div>
+        <div class="col-md-8">
+          <select ng-disabled="valueReadOnly || (parseNumberInvoiceEdited() !== 0)"  id="invoice-type-select" class="form-control form-control input-sm" ng-model="contrat.contratHeader.typeFacturation" data-ng-disabled="parseNumberInvoiceEdited() !== 0"
+            ng-options=" typefacturation.libelle  for typefacturation in typeFacturations  track by typefacturation.code" ng-change="selectTvaByInvoiceType()"></select>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="clearfix"></div>
+  <!-- new line edit -->
+
+  <div  class="col-md-12" style="background-color: #fff;">
+    <div class="thead-edition have-padding-top row " >
+      <div class="td-code col-md-2"> <label class="color-white">{{ 'facture.editionFacture.editTable.header.code.title' | translate }}</label> </div>
+      <div class="td-code col-md-2 "><label class="color-white"> {{ 'facture.editionFacture.editTable.header.libelle.title' | translate }}</label></div>
+      <div class="td-code  col-md-1 "><label class="color-white">{{ 'facture.editionFacture.editTable.header.quantite.title' | translate }}</label></div>
+      <div class="td-code col-md-2 "><label class="color-white">{{ 'facture.editionFacture.editTable.header.prixUnitaire.title' | translate }}</label></div>
+      <div class="td-code col-md-2 "><label class="color-white">{{ 'facture.editionFacture.editTable.header.prixNet.title' | translate }}</label></div>
+      <div class="td-code col-md-2 "><div class="padding-tva-line"><label class="color-white">{{ 'facture.editionFacture.editTable.header.codeTva.title' | translate }}</label></div></div>
+      <div class="td-code col-md-1 "><label class="color-white"> {{ 'facture.editionFacture.editTable.header.totalTTC.title' | translate }}<br/><span class="font-weight-normal"> </span></label></div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row" style="padding-top: 15px">
+      <ul class="list-unstyled list-ligne list" ui-sortable="sortableOptions"  dnd-list="contrat.lignes" style="margin-bottom: 0px">
+        <form name="formCreateLine">
+        <li class="newLigne have-padding-top">
+
+
+            <div class="td-code col-md-2">
+              <div class="input-group" style="width:100%;">
+                <input name="codeComptable" ng-model="newLigne.codeComptable"
+                       ng-disabled="valueReadOnly"
+                       type="search" class="form-control" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                       aria-expanded="false"
+                       ng-keyup="loadAccount(newLigne.codeComptable, 'comptable')"
+                       data-next="codeAnaltic" data-nav=true data-remise=false autocomplete='off' required
+                       ordre-tabulation/>
+                <div style='display:none'><i class="glyphicon glyphicon-search"></i></div>
+                <ul class="dropdown-menu " ng-show="!valueReadOnly"
+                    style="max-height:200px;overflow-y: scroll;overflow-x: hidden;width: 100%;">
+                  <li class=" " style="">
+                    <div ng-if="comptaAccounts.length > 0"
+                         class=" have-padding-top have-padding-bottom etablissement-active" style="font-weight: bold;">{{
+                      'admin.mnemoniques.codeCompta' | translate }}
+                    </div>
+
+                    <ul class="list-unstyled">
+                      <li ng-repeat="compte in comptaAccounts | filterstartwith:{codeCta: newLigne.codeComptable} "
+                          ng-click="selectedCompteComptaOnLine(compte)" class="marque-no-active"
+                          style="border-bottom: solid 1px #eee">
+                        <div>
+
+                          <label class="" style="padding-top: 2px">{{compte.codeCta}}-{{compte.libelle}}</label>
+                          <div class="clearfix"></div>
+                        </div>
+                      </li>
+                      <li ng-if="comptaAccounts.length < 1" class="have-padding-top have-padding-bottom">
+                        ...
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li class="have-margin-top"  >
+                    <div ng-if="listMnemoniques.length > 0" class=" have-padding-top have-padding-bottom etablissement-active" style="font-weight: bold;">{{ 'admin.mnemoniques.title' | translate }}</div>
+                    <ul class="list-unstyled">
+                      <li ng-repeat="nmo in listMnemoniques | filterstartwith:{code: newLigne.codeComptable} " ng-click="selectedCompteComptaOnLineFacture(null, nmo)" class="marque-no-active" style="border-bottom: solid 1px #eee">
+                        <div>
+                          <label class="" style="padding-top: 2px">{{nmo.code}}-{{nmo.libelle}}</label>
+                          <div class="clearfix"></div>
+                        </div>
+                      </li>
+                      <li ng-if="listMnemoniques.length < 1" class="have-padding-top have-padding-bottom">
+                        ...
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="td-code col-md-2 ">
+              <input
+                ng-disabled="valueReadOnly || (contrat.type.typeInvoice === 2 && contrat.link) || contrat.editMode"
+                type="text " class="form-control" ng-model="newLigne.libelle" name="libelle" id="libelle" required/>
+            </div>
+            <div class="td-code col-md-1"><input
+              ng-disabled="valueReadOnly || (contrat.type.typeInvoice === 2 && contrat.link) || contrat.editMode"
+              type="number" ng-model="newLigne.quantite" ng-min="1" name="quantite" class="form-control" required></div>
+            <div class="td-code col-md-2 "><input
+              ng-disabled="valueReadOnly"
+              type="number" ng-model="newLigne.prixUnit" ng-min="0" name="prixUnit" class="form-control" required></div>
+            <div class="td-code col-md-2"><input type="text"  name="prixNet"
+                                                 class="form-control" value="{{newLigne.prixNet.toFixed(2)}}"
+                                                 ng-disabled="true"></div>
+            <div class="td-code col-md-2">
+              <div class="padding-tva-line">
+                <select
+                  ng-disabled="valueReadOnly || (contrat.type.typeInvoice === 2 && contrat.link) || contrat.editMode"
+                  class="form-control form-control input-sm"
+                  ng-model="newLigne.tva" ng-options="tva.codeTVA+'-'+tva.libelle for tva in tvas  track by tva.codeTVA"
+                  class="form-control" id="tva"></select>
+              </div>
+            </div>
+            <div class="td-code col-md-1 text-right"><label class="no-margin no-padding">{{newLigne.totalTTC.toFixed(2)}} </label>
+              <br/><label class="no-margin no-padding font-weight-normal"></label></div>
+            <div class="clearfix"></div>
+
+        </li>
+        <li class="have-padding-top" style="border-top: solid 1px #dfdfdf;margin-top: 15px;padding-top: 15px;padding-bottom: 15px">
+
+          <div class="col-md-2 " style="padding-left: 25px;padding-top: 8px;">
+            <label>{{'contrat.edition.lines.compteAnalytique.title' | translate }}</label> <span ng-show="contrat.typeFacturation.isRequired" class="red-color-class">*</span>
+          </div>
+          <div class="col-md-3 ">
+            <div class="row input-group" style="width: 100%;padding-left: 15px;">
+              <input name="compteAnalytique" ng-model="newLigne.codeAnaltic" style="width: 107%"
+                     ng-disabled="valueReadOnly"
+                     type="search" class="form-control" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                     aria-expanded="false"
+                     ng-keyup="loadAccount(newLigne.codeAnaltic, 'analytic')" autocomplete='off'
+                     ordre-tabulation/>
+              <div style='display:none'><i class="glyphicon glyphicon-search"></i></div>
+              <ul class="dropdown-menu " ng-show="!valueReadOnly"
+                  style="max-height:200px;overflow-y: scroll;overflow-x: hidden;width: 100%;margin-left: 15px">
+                <li class=" " style="">
+                  <div ng-if="comptaAccounts.length > 0"
+                       class=" have-padding-top have-padding-bottom etablissement-active" style="font-weight: bold;">{{
+                    'admin.mnemoniques.codeCompta' | translate }}
+                  </div>
+
+                  <ul class="list-unstyled">
+                    <li ng-repeat="compte in analyticAccounts | filterstartwith:{codeAna: newLigne.codeAnaltic}" ng-click="newLigne.codeAnaltic = compte.codeAna;" class="marque-no-active"
+                        style="border-bottom: solid 1px #eee">
+                      <div>
+
+                        <label class="" style="padding-top: 2px">{{compte.codeAna}}-{{compte.libelle}}</label>
+                        <div class="clearfix"></div>
+                      </div>
+                    </li>
+                    <li ng-if="analyticAccounts.length < 1" class="have-padding-top have-padding-bottom">
+                      ...
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-2 col-md-offset-1" style="padding-top: 5px;">
+            <label >{{'contrat.edition.lines.commentaire.title' | translate }}</label>
+          </div>
+          <div class="col-md-4">
+            <input ng-disabled="valueReadOnly" type="text" ng-model="newLigne.commentaire" name="commentaire"  class="form-control navigation-input-comment"   >
+          </div>
+           <div class="clearfix"></div>
+        </li>
+        <li class="have-padding-top" style="background-color: #efefef;padding: 15px 15px  15px  15px;">
+         <div class="td-code col-md-2" style="padding-top: 5px"><label>{{'contrat.edition.lines.textPreformated.title' | translate }}</label></div>
+         <div class="td-code col-md-3" style="padding-left: 5px;"><input ng-disabled="valueReadOnly" type="text" placeholder="{{ 'contrat.edition.lines.textPreformatedOnLibelle.format' | translate }}" ng-model="newLigne.preformattedData" name="textPreformate" class="form-control" ng-change="testRegex()" readonly></div>
+          <div class="td-code col-md-offset-1 col-md-2 " style="padding-top: 5px">
+            <label style="padding-right: 15px">{{ 'contrat.edition.lines.textPreformatedOnLibelle.title' | translate }}</label>
+            <input ng-disabled="valueReadOnly" type="radio" ng-model="linkPreformatted"  value="libelle" ></div>
+          <div class="td-code col-md-3 " style="padding-top: 5px">
+            <label style="padding-right: 15px">{{ 'contrat.edition.lines.textPreformatedOnComment.title' | translate }} </label>
+            <input ng-disabled="valueReadOnly" type="radio" ng-model="linkPreformatted" value="comment" ></div>
+          <div class="clearfix"></div>
+        </li>
+        </form>
+      </ul>
+    </div>
+  </div>
+  <div class="clearfix"></div>
+  <div>
+    <!-- display here a  collapse for listing contrat's Facture -->
+    <div class="panel owner-panel ">
+      <div class="panel-heading panel-title-box title-box bg-color-title-panel-grey">
+        <div class="row">
+          <div class="col-md-1  icone-size-large  no-padding-right align-center-icon">
+            <a class="icon-pointer" data-toggle='collapse' ng-click="isCollapsedinvoice = !isCollapsedinvoice"
+               data-target="#panel-factures-conrat" style=" color: #646464">
+              <i class="material-icons">view_list</i>
+            </a>
+          </div>
+          <div class="col-md-9 title-font-size-large no-margin no-padding-left"
+               style="color: #646464; position: relative;top: -5px;transform: translateY(23%); margin-top: -2px !important;"> {{ 'contrat.edition.listFacturecontrat.title' | translate }}
+          </div>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+      <div class="panel-body  panel-body-edition-facture no-padding collapse {{isIn}}" collapse="isCollapsedinvoice"
+           id="panel-factures-conrat">
+
+        <div class="panel owner-panel">
+          <div ng-include="'modules/contrats/client/includes/list-factures-contrat.client.include.html'"></div>
+        </div>
+
+
+      </div>
+    </div>
+
+
+
+  </div>
+
+</div>
+
+

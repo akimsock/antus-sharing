@@ -1,0 +1,123 @@
+<div class="">
+  <div class="modal-header">
+
+    <div class="col-lg-11 col-md-11 col-sm-11 pull-left vehicule-size">
+      <i class="material-icons vehicule-size icon-modal-behavor">settings</i>
+      &nbsp;&nbsp;{{vehicule.libelle}}
+    </div>
+    <div class="col-lg-1 col-md-1 col-sm-1 no-padding-right">
+      <button type="button" class="close pull-right" ng-click="cancel()">×</button>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+  <div class="modal-body">
+
+    <table class="table no-margin table-factures" >
+      <thead class=" title-box vehicule-thead" >
+      <tr class="">
+        <th class="col-lg-1 col-md-1 com-sm-2">
+          <a class="list-facture-link color-black" href="#" >
+            {{'facture.referenceEntete.vehiculesChoice.marque' | translate}}
+          </a>
+        </th>
+        <th class="col-lg-1 col-md-1 com-sm-3">
+          <a class="list-facture-link color-black" href="#" >
+            {{'facture.referenceEntete.vehiculesChoice.modele' | translate}}
+          </a>
+        </th>
+        <th class="col-lg-2 col-md-2 com-sm-3">
+          <a class="list-facture-link color-black" href="#" >
+            {{'facture.referenceEntete.vehiculesChoice.immatriculation' | translate}}
+          </a>
+        </th>
+        <th class="col-lg-2 col-md-2 com-sm-3">
+          <a class="list-facture-link color-black" href="#" >
+            {{'facture.referenceEntete.vehiculesChoice.chassis' | translate}}
+          </a>
+        </th>
+        <th class="col-lg-1 col-md-1 com-sm-3">
+          <a class="list-facture-link color-black" href="#" >
+            {{'facture.referenceEntete.vehiculesChoice.vo' | translate}}
+          </a>
+        </th>
+        <th class="col-lg-2 col-md-2 com-sm-3">
+          <a class="list-facture-link color-black" href="#" >
+            {{'facture.referenceEntete.vehiculesChoice.courtoisie' | translate}}
+          </a>
+        </th>
+        <th class="col-lg-2 col-md-2 com-sm-3">
+          <a class="list-facture-link color-black" href="#" >
+            {{'facture.referenceEntete.vehiculesChoice.client' | translate}}
+          </a>
+        </th>
+
+      </tr>
+      </thead>
+      <tbody class="">
+      <!--Ligne de recherche-->
+      <tr>
+        <td class="col-lg-1 col-md-1 com-sm-2 no-padding-left"><input readonly  ng-model="search.carMark" class="form-control"/></td>
+        <td class="col-lg-1 col-md-1 com-sm-3 no-padding-left"><input readonly ng-disabled="complementCommande.vehiculeModel" ng-model="search.vehiculeModel" class="form-control"/></td>
+        <td class="col-lg-2 col-md-2 com-sm-3 no-padding-left input-group" >
+          <input  type="text" ng-model="search.numImmatriculation" class="form-control" style="width: 73%; margin-left: 4px;">
+            <span class="input-group-btn">
+              <button ng-disabled="valueReadOnly" type="button" class="btn button-shearch-client-active" ng-click="loadVehicule()" style="margin-left: -2%;height: 34px;border: solid 1px #ccc;">
+                <span class="glyphicon glyphicon-search"></span>
+              </button>
+            </span>
+        </td>
+        <td class="col-lg-2 col-md-2 com-sm-3 input-group">
+          <input ng-model="search.chassis" class="form-control" style="width: 73%; margin-left: 4px;"/>
+          <span class="input-group-btn">
+              <button ng-disabled="valueReadOnly" type="button" class="btn button-shearch-client-active" ng-click="loadVehicule()" style="margin-left: -2%;height: 34px;border: solid 1px #ccc;">
+                <span class="glyphicon glyphicon-search"></span>
+              </button>
+            </span>
+        </td>
+        <td class="col-lg-1 col-md-1 com-sm-3 no-padding-left"><input readonly ng-model="search.esVO" class="form-control"/></td>
+        <td class="col-lg-2 col-md-2 com-sm-3 no-padding-left"><input readonly ng-model="search.courtoisie" class="form-control"/></td>
+        <td class="col-lg-2 col-md-2 com-sm-3 no-padding-left"><input readonly ng-model="search.carOwner" class="form-control"/></td>
+      </tr>
+      <!--Liste des vehicules-->
+      <tr ng-repeat="vehicule in filtered = (listVehicules | filter:{ numImmatriculation: search.numImmatriculation, chassis: search.chassis })
+          | start:(currentPage-1)*perPage | limitTo:perPage "
+          ng-class="{'tr-selected':vehicule === selectedVehicule}"
+          ng-click="setCurrentVehicule(vehicule)" class="icon-pointer">
+
+        <td class="col-lg-1 col-md-1 com-sm-2">{{vehicule.marque}}</td>
+        <td class="col-lg-1 col-md-1 com-sm-3">{{vehicule.vehiculeModel}}</td>
+        <td class="col-lg-2 col-md-2 com-sm-3">{{vehicule.numImmatriculation}}</td>
+        <td class="col-lg-2 col-md-2 com-sm-3">{{vehicule.chassis}}</td>
+        <td class="col-lg-1 col-md-1 com-sm-3">{{esVoMeaning(vehicule.esVO)}}</td>
+        <td class="col-lg-2 col-md-2 com-sm-3">{{esCortoisieMeaning(vehicule.courtoisie)}}</td>
+        <td class="col-lg-2 col-md-2 com-sm-3">{{vehicule.client}}</td>
+      </tr>
+      </tbody>
+    </table>
+
+
+    <div ng-show="filtered.length <=0">
+      <p class="have-padding" style="font-size: small;color: #888"> {{ 'facture.referenceEntete.vehiculesChoice.modal.listEmpty'  | translate }} </p>
+    </div>
+
+    <uib-pagination ng-show="filtered.length > 0" total-items="filtered.length" items-per-page="perPage" next-text="{{ 'pagination.next' | translate }}"
+              previous-text="{{ 'pagination.previous' | translate }}" first-text="{{ 'pagination.first' | translate }}"
+              last-text="{{ 'pagination.last' | translate }}" ng-model="currentPage" max-size="noOfPages"
+              class="pagination-sm no-margin pull-right pagination-vehicule-mg" boundary-links="true" rotate="false">
+    </uib-pagination>
+
+
+  </div>
+  <div class="modal-footer vehicule-modal-footer">
+    <button  title="{{ 'facture.referenceEntete.vehiculesChoice.modal.tooltipValidate'  | translate }}" type="submit" 
+      class="btn btn-error"  ng-click="cancelSearching() ">
+      {{'buttons.cancel.title' | translate}}
+    </button>
+    <button  title="{{ 'facture.referenceEntete.vehiculesChoice.modal.tooltipValidate'  | translate }}" type="submit" 
+      class="btn btn-success"  ng-click="validateChoice()">
+      {{'buttons.valid.title' | translate}}
+    </button>
+
+  </div>
+
+</div>
