@@ -1,0 +1,26 @@
+﻿<section>
+  <div class="page-header">
+    <h1>
+      Demandes
+      <a class="btn btn-primary pull-right" data-ui-sref="admin.demandes.create">
+        <i class="glyphicon glyphicon-plus"></i>
+      </a>
+    </h1>
+  </div>
+  <div class="list-group">
+    <a data-ng-repeat="demande in vm.demandes" data-ui-sref="admin.demandes.edit({demandeId: demande._id})" class="list-group-item">
+      <small class="list-group-item-text">
+        Posted on
+        <span data-ng-bind="demande.created | date:'mediumDate'"></span>
+        by
+        <span ng-if="demande.user" ng-bind="demande.user.displayName"></span>
+        <span ng-if="!demande.user">Deleted User</span>
+      </small>
+      <h4 class="list-group-item-heading" data-ng-bind="demande.title"></h4>
+      <p class="list-group-item-text" data-ng-bind="demande.content"></p>
+    </a>
+  </div>
+  <div class="alert alert-warning text-center" data-ng-if="demandes.$resolved && !demandes.length">
+    No demandes yet, why don't you <a data-ui-sref="admin.demandes.create">create one</a>?
+  </div>
+</section>

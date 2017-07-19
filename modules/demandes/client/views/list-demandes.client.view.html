@@ -1,0 +1,18 @@
+<section>
+  <div class="page-header">
+    <h1>Demandes</h1>
+  </div>
+  <div class="list-group">
+    <a ng-repeat="demande in vm.demandes" ui-sref="demandes.view({ demandeId: demande._id })" class="list-group-item">
+      <small class="list-group-item-text">
+        Posted on
+        <span ng-bind="demande.created | date:'mediumDate'"></span>
+        by
+        <span ng-if="demande.user" ng-bind="demande.user.displayName"></span>
+        <span ng-if="!demande.user">Deleted User</span>
+      </small>
+      <h4 class="list-group-item-heading" ng-bind="demande.title"></h4>
+      <p class="list-group-item-text" ng-bind="demande.content"></p>
+    </a>
+  </div>
+</section>
