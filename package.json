@@ -69,6 +69,7 @@
     "passport-twitter": "~1.0.4",
     "serve-favicon": "~2.4.2",
     "socket.io": "^2.0.2",
+    "swagger-ui": "~2.1.2",
     "validator": "~8.0.0",
     "winston": "^2.3.1",
     "wiredep": "~4.0.0"
