@@ -49,12 +49,12 @@
         }
       }
     },
-    "/clients": {
+    "/demandes": {
       "get": {
         "tags": [
           "Demandes"
         ],
-        "description": "Récupérer la liste des Clients",
+        "description": "Récupérer la liste des Demandes",
         "parameters": [
           {
             "name": "Authorization",
@@ -86,18 +86,18 @@
               "description": "Should return a liste of elements that respect predicates",
               "type": "array",
               "items": {
-                "$ref": "#/definitions/Customer"
+                "$ref": "#/definitions/Demande"
               }
             }
           },
           "206": {
             "description": "Should return a partial list of elements event if it is empty",
             "schema": {
-              "title": "Clients",
+              "title": "Demandes",
               "description": "Should return a liste of elements that respect predicates",
               "type": "array",
               "items": {
-                "$ref": "#/definitions/Facture"
+                "$ref": "#/definitions/Demande"
               }
             }
           },
@@ -132,19 +132,84 @@
             }
           }
         }
-      }
-    },
-    "/clients/{codeClient}": {
-      "get": {
+      },
+      "post": {
         "tags": [
-          "Clients"
+          "Demandes"
         ],
-        "description": "récupérer un Client",
+        "summary": "Add a new Demande ",
+        "description": "Ajouter une demande ",
+        "operationId": "addDemande",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
-            "name": "codeClient",
+            "in": "body",
+            "name": "body",
+            "description": "Demande object that needs to be added to the store",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Demande"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Must specified Authorization header (RFC 2616)",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Should return a created elements | Succces operation ",
+            "schema": {
+              "title": "OK",
+              "description": "Should return a created elements ",
+              "items": {
+                "$ref": "#/definitions/Demande"
+              }
+            }
+          },
+          "405": {
+            "description": "Invalid input"
+          },
+          "400": {
+            "description": "Invalid Order"
+          },
+          "403": {
+            "description": "When authenticated user have not enough rights to modify user's details",
+            "schema": {
+              "title":"Forbidden",
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "When a server error occurred",
+            "schema": {
+              "title":"Internal Server Error",
+              "description": "Should specified error code and human readable explanation",
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/demandes/{idDemande}": {
+      "get": {
+        "tags": [
+          "Demandes"
+        ],
+        "description": "Récupérer une Demandes",
+        "parameters": [
+          {
+            "name": "idDemande",
             "in": "path",
-            "description": "client identifier",
+            "description": "Demande identifier",
             "type": "string"
           },
           {
@@ -160,7 +225,7 @@
             "description": "Whend ressource exist",
             "schema": {
               "title": "OK",
-              "$ref": "#/definitions/Customer"
+              "$ref": "#/definitions/Demande"
             }
           },
           "400": {
@@ -200,19 +265,34 @@
             }
           }
         }
-      }
-    },
-    "/clients/siret/{siretClient}": {
-      "get": {
+      },
+      "put": {
         "tags": [
-          "Clients"
+          "Demandes"
         ],
-        "description": "search for a customer from the CIF code",
+        "summary": "update a new Demande ",
+        "description": "Modifier une demande ",
+        "operationId": "updateDemande",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
-            "name": "siretClient",
+            "in": "body",
+            "name": "body",
+            "description": "Demande object that needs to be udate",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Demande"
+            }
+          },
+          {
+            "name": "idDemande",
             "in": "path",
-            "description": "CIF code",
+            "description": "Demande identifier",
             "type": "string"
           },
           {
@@ -225,109 +305,20 @@
         ],
         "responses": {
           "200": {
-            "description": "Whend ressource exist",
+            "description": "Should return a created elements | Succces operation ",
             "schema": {
               "title": "OK",
-              "$ref": "#/definitions/Customer"
-            }
-          },
-          "400": {
-            "description": "When one of the parameter is malformed.",
-            "schema": {
-              "title":"Bad Request",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "403": {
-            "description": "When authenticated user have not enough rights to modify user's details",
-            "schema": {
-              "title":"Forbidden",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "404": {
-            "description": "when ressource not found",
-            "schema": {
-              "title":"Not Found",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "When a server error occurred",
-            "schema": {
-              "title":"Internal Server Error",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "501": {
-            "description": "When this functionnality is not implemented",
-            "schema": {
-              "title":"Not Implemented",
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/tva": {
-      "get": {
-        "tags": [
-          "TVA"
-        ],
-        "description": "Récupérer la liste des TVA",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Must specified Authorization header (RFC 2616)",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "filter",
-            "in": "query",
-            "description": "See ODATA URI Conventions for more details on filter capabilities http://www.odata.org/documentation/odata-version-2-0/uri-conventions",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "orderby",
-            "in": "query",
-            "description": "Use to order the collection of Entries",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Should return a liste of elements event if it is empty",
-            "schema": {
-              "title": "OK",
-              "description": "Should return a liste of elements that respect predicates",
-              "type": "array",
+              "description": "Should return a created elements ",
               "items": {
-                "$ref": "#/definitions/Facture"
+                "$ref": "#/definitions/Demande"
               }
             }
           },
-          "206": {
-            "description": "Should return a partial list of elements event if it is empty",
-            "schema": {
-              "title": "TVA",
-              "description": "Should return a liste of elements that respect predicates",
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Facture"
-              }
-            }
+          "405": {
+            "description": "Invalid input"
           },
           "400": {
-            "description": "When one of the parameter is malformed",
-            "schema": {
-              "title":"Bad Request",
-              "$ref": "#/definitions/Error"
-            }
+            "description": "Invalid Order"
           },
           "403": {
             "description": "When authenticated user have not enough rights to modify user's details",
@@ -340,1358 +331,6 @@
             "description": "When a server error occurred",
             "schema": {
               "title":"Internal Server Error",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "501": {
-            "description": "When this functionnality is not implemented",
-            "schema": {
-              "title":"Not Implemented",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/tva/{codeTva}": {
-      "get": {
-        "tags": [
-          "TVA"
-        ],
-        "description": "récupérer un TVA",
-        "parameters": [
-          {
-            "name": "codeTva",
-            "in": "path",
-            "description": "Tva identifier",
-            "type": "string"
-          },
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Must specified Authorization header (RFC 2616)",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Whend ressource exist",
-            "schema": {
-              "title": "OK",
-              "$ref": "#/definitions/Facture"
-            }
-          },
-          "400": {
-            "description": "When one of the parameter is malformed.",
-            "schema": {
-              "title":"Bad Request",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "403": {
-            "description": "When authenticated user have not enough rights to modify user's details",
-            "schema": {
-              "title":"Forbidden",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "404": {
-            "description": "when ressource not found",
-            "schema": {
-              "title":"Not Found",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "When a server error occurred",
-            "schema": {
-              "title":"Internal Server Error",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "501": {
-            "description": "When this functionnality is not implemented",
-            "schema": {
-              "title":"Not Implemented",
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-
-    "/compte/{typeCompte}/{societe}": {
-      "get": {
-        "tags": [
-          "Compte/Compta-Analytic"
-        ],
-        "description": "Récupérer la liste des comptes compta ou compte analytique",
-        "parameters": [
-          {
-            "name": "typeCompte",
-            "in": "path",
-            "description": "Compte Type",
-            "type": "string"
-          },
-          {
-            "name": "societe",
-            "in": "path",
-            "description": "Societe",
-            "type": "string"
-          },
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Must specified Authorization header (RFC 2616)",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "filter",
-            "in": "query",
-            "description": "See ODATA URI Conventions for more details on filter capabilities http://www.odata.org/documentation/odata-version-2-0/uri-conventions",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "orderby",
-            "in": "query",
-            "description": "Use to order the collection of Entries",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Should return a liste of elements event if it is empty",
-            "schema": {
-              "title": "OK",
-              "description": "Should return a liste of elements that respect predicates",
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Facture"
-              }
-            }
-          },
-          "206": {
-            "description": "Should return a partial list of elements event if it is empty",
-            "schema": {
-              "title": "Compte",
-              "description": "Should return a liste of elements that respect predicates",
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Facture"
-              }
-            }
-          },
-          "400": {
-            "description": "When one of the parameter is malformed",
-            "schema": {
-              "title":"Bad Request",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "403": {
-            "description": "When authenticated user have not enough rights to modify user's details",
-            "schema": {
-              "title":"Forbidden",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "When a server error occurred",
-            "schema": {
-              "title":"Internal Server Error",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "501": {
-            "description": "When this functionnality is not implemented",
-            "schema": {
-              "title":"Not Implemented",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-
-    "/compte/{typeCompte}/{societe}/{codeCompta}": {
-      "get": {
-        "tags": [
-          "Compte/Compta-Analytic"
-        ],
-        "description": "récupérer un Compte Compta ou un compte Analytique",
-        "parameters": [
-          {
-            "name": "typeCompte",
-            "in": "path",
-            "description": "Compte Type",
-            "type": "string"
-          },
-          {
-            "name": "codeCompta",
-            "in": "path",
-            "description": "Compte reference",
-            "type": "string"
-          },
-          {
-            "name": "societe",
-            "in": "path",
-            "description": "Societe",
-            "type": "string"
-          },
-          {
-            "name": "codeClient",
-            "in": "path",
-            "description": "client identifier",
-            "type": "string"
-          },
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Must specified Authorization header (RFC 2616)",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Whend ressource exist",
-            "schema": {
-              "title": "OK",
-              "$ref": "#/definitions/Facture"
-            }
-          },
-          "400": {
-            "description": "When one of the parameter is malformed.",
-            "schema": {
-              "title":"Bad Request",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "403": {
-            "description": "When authenticated user have not enough rights to modify user's details",
-            "schema": {
-              "title":"Forbidden",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "404": {
-            "description": "when ressource not found",
-            "schema": {
-              "title":"Not Found",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "When a server error occurred",
-            "schema": {
-              "title":"Internal Server Error",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "501": {
-            "description": "When this functionnality is not implemented",
-            "schema": {
-              "title":"Not Implemented",
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-
-    "/factures": {
-      "get": {
-        "tags": [
-          "Factures"
-        ],
-        "description": "Récupérer la liste des factures",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Must specified Authorization header (RFC 2616)",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "filter",
-            "in": "query",
-            "description": "See ODATA URI Conventions for more details on filter capabilities http://www.odata.org/documentation/odata-version-2-0/uri-conventions",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "orderby",
-            "in": "query",
-            "description": "Use to order the collection of Entries",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Should return a liste of elements event if it is empty",
-            "schema": {
-              "title": "OK",
-              "description": "Should return a liste of elements that respect predicates",
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Facture"
-              }
-            }
-          },
-          "206": {
-            "description": "Should return a partial list of elements event if it is empty",
-            "schema": {
-              "title": "Factures",
-              "description": "Should return a liste of elements that respect predicates",
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Facture"
-              }
-            }
-          },
-          "400": {
-            "description": "When one of the parameter is malformed",
-            "schema": {
-              "title":"Bad Request",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "403": {
-            "description": "When authenticated user have not enough rights to modify user's details",
-            "schema": {
-              "title":"Forbidden",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "When a server error occurred",
-            "schema": {
-              "title":"Internal Server Error",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "501": {
-            "description": "When this functionnality is not implemented",
-            "schema": {
-              "title":"Not Implemented",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-
-    "/factures/{factureId}": {
-      "get": {
-        "tags": [
-          "Factures"
-        ],
-        "description": "récupérer une Facture",
-        "parameters": [
-          {
-            "name": "factureId",
-            "in": "path",
-            "description": "facture identifier",
-            "type": "string"
-          },
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Must specified Authorization header (RFC 2616)",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Whend ressource exist",
-            "schema": {
-              "title": "OK",
-              "$ref": "#/definitions/Facture"
-            }
-          },
-          "400": {
-            "description": "When one of the parameter is malformed.",
-            "schema": {
-              "title":"Bad Request",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "403": {
-            "description": "When authenticated user have not enough rights to modify user's details",
-            "schema": {
-              "title":"Forbidden",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "404": {
-            "description": "when ressource not found",
-            "schema": {
-              "title":"Not Found",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "When a server error occurred",
-            "schema": {
-              "title":"Internal Server Error",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "501": {
-            "description": "When this functionnality is not implemented",
-            "schema": {
-              "title":"Not Implemented",
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-
-    "/societes": {
-      "get": {
-        "tags": [
-          "Societes"
-        ],
-        "description": "Récupérer la liste des societes",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Must specified Authorization header (RFC 2616)",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "filter",
-            "in": "query",
-            "description": "See ODATA URI Conventions for more details on filter capabilities http://www.odata.org/documentation/odata-version-2-0/uri-conventions",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "orderby",
-            "in": "query",
-            "description": "Use to order the collection of Entries",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Should return a liste of elements event if it is empty",
-            "schema": {
-              "title": "OK",
-              "description": "Should return a liste of elements that respect predicates",
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Societe"
-              }
-            }
-          },
-          "206": {
-            "description": "Should return a partial list of elements event if it is empty",
-            "schema": {
-              "title": "Societes",
-              "description": "Should return a liste of elements that respect predicates",
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Societe"
-              }
-            }
-          },
-          "400": {
-            "description": "When one of the parameter is malformed",
-            "schema": {
-              "title":"Bad Request",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "403": {
-            "description": "When authenticated user have not enough rights to modify user's details",
-            "schema": {
-              "title":"Forbidden",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "When a server error occurred",
-            "schema": {
-              "title":"Internal Server Error",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "501": {
-            "description": "When this functionnality is not implemented",
-            "schema": {
-              "title":"Not Implemented",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-
-    "/societes/{codeSociete}": {
-      "get": {
-        "tags": [
-          "Societes"
-        ],
-        "description": "récupérer une société",
-        "parameters": [
-          {
-            "name": "codeSociete",
-            "in": "path",
-            "description": "society identifier",
-            "type": "string"
-          },
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Must specified Authorization header (RFC 2616)",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Whend ressource exist",
-            "schema": {
-              "title": "OK",
-              "$ref": "#/definitions/Societe"
-            }
-          },
-          "400": {
-            "description": "When one of the parameter is malformed.",
-            "schema": {
-              "title":"Bad Request",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "403": {
-            "description": "When authenticated user have not enough rights to modify user's details",
-            "schema": {
-              "title":"Forbidden",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "404": {
-            "description": "when ressource not found",
-            "schema": {
-              "title":"Not Found",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "When a server error occurred",
-            "schema": {
-              "title":"Internal Server Error",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "501": {
-            "description": "When this functionnality is not implemented",
-            "schema": {
-              "title":"Not Implemented",
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-
-    "/societes/{codeSociete}/etablissement": {
-      "get": {
-        "tags": [
-          "Societes"
-        ],
-        "description": "récupérer la liste des établissements d'une société",
-        "parameters": [
-          {
-            "name": "codeSociete",
-            "in": "path",
-            "description": "society identifier",
-            "type": "string"
-          },
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Must specified Authorization header (RFC 2616)",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Whend ressource exist",
-            "schema": {
-              "title": "OK",
-              "$ref": "#/definitions/Societe"
-            }
-          },
-          "400": {
-            "description": "When one of the parameter is malformed.",
-            "schema": {
-              "title":"Bad Request",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "403": {
-            "description": "When authenticated user have not enough rights to modify user's details",
-            "schema": {
-              "title":"Forbidden",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "404": {
-            "description": "when ressource not found",
-            "schema": {
-              "title":"Not Found",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "When a server error occurred",
-            "schema": {
-              "title":"Internal Server Error",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "501": {
-            "description": "When this functionnality is not implemented",
-            "schema": {
-              "title":"Not Implemented",
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-
-    "/societes/{codeSociete}/etablissement/{codeEtablissement}": {
-      "get": {
-        "tags": [
-          "Societes"
-        ],
-        "description": "récupérer un établissement",
-        "parameters": [
-          {
-            "name": "codeSociete",
-            "in": "path",
-            "description": "society identifier",
-            "type": "string"
-          },
-          {
-            "name": "codeEtablissement",
-            "in": "path",
-            "description": "etablishment identifier",
-            "type": "string"
-          },
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Must specified Authorization header (RFC 2616)",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Whend ressource exist",
-            "schema": {
-              "title": "OK",
-              "$ref": "#/definitions/Societe"
-            }
-          },
-          "400": {
-            "description": "When one of the parameter is malformed.",
-            "schema": {
-              "title":"Bad Request",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "403": {
-            "description": "When authenticated user have not enough rights to modify user's details",
-            "schema": {
-              "title":"Forbidden",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "404": {
-            "description": "when ressource not found",
-            "schema": {
-              "title":"Not Found",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "When a server error occurred",
-            "schema": {
-              "title":"Internal Server Error",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "501": {
-            "description": "When this functionnality is not implemented",
-            "schema": {
-              "title":"Not Implemented",
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-
-    "/devises": {
-      "get": {
-        "tags": [
-          "Devises"
-        ],
-        "description": "Récupérer la liste des devises",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Must specified Authorization header (RFC 2616)",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "filter",
-            "in": "query",
-            "description": "See ODATA URI Conventions for more details on filter capabilities http://www.odata.org/documentation/odata-version-2-0/uri-conventions",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "orderby",
-            "in": "query",
-            "description": "Use to order the collection of Entries",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Should return a liste of elements event if it is empty",
-            "schema": {
-              "title": "OK",
-              "description": "Should return a liste of elements that respect predicates",
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Devise"
-              }
-            }
-          },
-          "206": {
-            "description": "Should return a partial list of elements event if it is empty",
-            "schema": {
-              "title": "Devises",
-              "description": "Should return a liste of elements that respect predicates",
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Devise"
-              }
-            }
-          },
-          "400": {
-            "description": "When one of the parameter is malformed",
-            "schema": {
-              "title":"Bad Request",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "403": {
-            "description": "When authenticated user have not enough rights to modify user's details",
-            "schema": {
-              "title":"Forbidden",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "When a server error occurred",
-            "schema": {
-              "title":"Internal Server Error",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "501": {
-            "description": "When this functionnality is not implemented",
-            "schema": {
-              "title":"Not Implemented",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-
-    "/devises/{codeDevise}": {
-      "get": {
-        "tags": [
-          "Devises"
-        ],
-        "description": "récupérer la devise",
-        "parameters": [
-          {
-            "name": "codeDevise",
-            "in": "path",
-            "description": "Currency identifier",
-            "type": "string"
-          },
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Must specified Authorization header (RFC 2616)",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Whend ressource exist",
-            "schema": {
-              "title": "OK",
-              "$ref": "#/definitions/Devise"
-            }
-          },
-          "400": {
-            "description": "When one of the parameter is malformed.",
-            "schema": {
-              "title":"Bad Request",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "403": {
-            "description": "When authenticated user have not enough rights to modify user's details",
-            "schema": {
-              "title":"Forbidden",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "404": {
-            "description": "when ressource not found",
-            "schema": {
-              "title":"Not Found",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "When a server error occurred",
-            "schema": {
-              "title":"Internal Server Error",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "501": {
-            "description": "When this functionnality is not implemented",
-            "schema": {
-              "title":"Not Implemented",
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-
-    "/users": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "description": "Récupérer la liste des utilisateurs",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Must specified Authorization header (RFC 2616)",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "filter",
-            "in": "query",
-            "description": "See ODATA URI Conventions for more details on filter capabilities http://www.odata.org/documentation/odata-version-2-0/uri-conventions",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "orderby",
-            "in": "query",
-            "description": "Use to order the collection of Entries",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Should return a liste of elements event if it is empty",
-            "schema": {
-              "title": "OK",
-              "description": "Should return a liste of elements that respect predicates",
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/User"
-              }
-            }
-          },
-          "206": {
-            "description": "Should return a partial list of elements event if it is empty",
-            "schema": {
-              "title": "Factures",
-              "description": "Should return a liste of elements that respect predicates",
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/User"
-              }
-            }
-          },
-          "400": {
-            "description": "When one of the parameter is malformed",
-            "schema": {
-              "title":"Bad Request",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "403": {
-            "description": "When authenticated user have not enough rights to modify user's details",
-            "schema": {
-              "title":"Forbidden",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "When a server error occurred",
-            "schema": {
-              "title":"Internal Server Error",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "501": {
-            "description": "When this functionnality is not implemented",
-            "schema": {
-              "title":"Not Implemented",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-
-    "/users/{userId}": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "description": "récupérer un utilisateur",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "description": "User identifier",
-            "type": "string"
-          },
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Must specified Authorization header (RFC 2616)",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "When ressource exist",
-            "schema": {
-              "title": "OK",
-              "$ref": "#/definitions/User"
-            }
-          },
-          "400": {
-            "description": "When one of the parameter is malformed.",
-            "schema": {
-              "title":"Bad Request",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "403": {
-            "description": "When authenticated user have not enough rights to modify user's details",
-            "schema": {
-              "title":"Forbidden",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "404": {
-            "description": "when ressource not found",
-            "schema": {
-              "title":"Not Found",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "When a server error occurred",
-            "schema": {
-              "title":"Internal Server Error",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "501": {
-            "description": "When this functionnality is not implemented",
-            "schema": {
-              "title":"Not Implemented",
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-
-    "/journals": {
-      "get": {
-        "tags": [
-          "Journals"
-        ],
-        "description": "Get list of journals",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Must specified Authorization header (RFC 2616)",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "filter",
-            "in": "query",
-            "description": "See ODATA URI Conventions for more details on filter capabilities http://www.odata.org/documentation/odata-version-2-0/uri-conventions",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "orderby",
-            "in": "query",
-            "description": "Use to order the collection of Entries",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Should return a list of elements event if it is empty",
-            "schema": {
-              "title": "OK",
-              "description": "Should return a list of elements that respect predicates",
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Journal"
-              }
-            }
-          },
-          "206": {
-            "description": "Should return a partial list of elements event if it is empty",
-            "schema": {
-              "title": "Journals",
-              "description": "Should return a list of elements that respect predicates",
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Journal"
-              }
-            }
-          },
-          "400": {
-            "description": "When one of the parameter is malformed",
-            "schema": {
-              "title":"Bad Request",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "403": {
-            "description": "When authenticated user have not enough rights to modify user's details",
-            "schema": {
-              "title":"Forbidden",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "When a server error occurred",
-            "schema": {
-              "title":"Internal Server Error",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "501": {
-            "description": "When this functionnality is not implemented",
-            "schema": {
-              "title":"Not Implemented",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-
-    "/api/etablissements": {
-      "get": {
-        "tags": [
-          "Etablissements"
-        ],
-        "description": "Get list of etablishments",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Must specified Authorization header (RFC 2616)",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "filter",
-            "in": "query",
-            "description": "See ODATA URI Conventions for more details on filter capabilities http://www.odata.org/documentation/odata-version-2-0/uri-conventions",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "orderby",
-            "in": "query",
-            "description": "Use to order the collection of Entries",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Should return a list of elements event if it is empty",
-            "schema": {
-              "title": "OK",
-              "description": "Should return a list of elements that respect predicates",
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Etablissement"
-              }
-            }
-          },
-          "206": {
-            "description": "Should return a partial list of elements event if it is empty",
-            "schema": {
-              "title": "Etablissements",
-              "description": "Should return a list of elements that respect predicates",
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Etablissement"
-              }
-            }
-          },
-          "400": {
-            "description": "When one of the parameter is malformed",
-            "schema": {
-              "title":"Bad Request",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "403": {
-            "description": "When authenticated user have not enough rights to modify user's details",
-            "schema": {
-              "title":"Forbidden",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "When a server error occurred",
-            "schema": {
-              "title":"Internal Server Error",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "501": {
-            "description": "When this functionnality is not implemented",
-            "schema": {
-              "title":"Not Implemented",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-
-    "/api/etablissements/:codeEtablissement": {
-      "get": {
-        "tags": [
-          "Etablissements"
-        ],
-        "description": "Get one etablishment",
-        "parameters": [
-          {
-            "name": "codeEtablissement",
-            "in": "path",
-            "description": "etablishment identifier",
-            "type": "string"
-          },
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Must specified Authorization header (RFC 2616)",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "When ressource exist",
-            "schema": {
-              "title": "OK",
-              "$ref": "#/definitions/Etablissement"
-            }
-          },
-          "400": {
-            "description": "When one of the parameter is malformed.",
-            "schema": {
-              "title":"Bad Request",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "403": {
-            "description": "When authenticated user have not enough rights to modify user's details",
-            "schema": {
-              "title":"Forbidden",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "404": {
-            "description": "when ressource not found",
-            "schema": {
-              "title":"Not Found",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "When a server error occurred",
-            "schema": {
-              "title":"Internal Server Error",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "501": {
-            "description": "When this functionnality is not implemented",
-            "schema": {
-              "title":"Not Implemented",
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-
-    "/api/contrats": {
-      "get": {
-        "tags": [
-          "Contrats"
-        ],
-        "description": "Get list of pacts (Contrats)",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Must specified Authorization header (RFC 2616)",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "filter",
-            "in": "query",
-            "description": "See ODATA URI Conventions for more details on filter capabilities http://www.odata.org/documentation/odata-version-2-0/uri-conventions",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "orderby",
-            "in": "query",
-            "description": "Use to order the collection of Entries",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Should return a list of elements event if it is empty",
-            "schema": {
-              "title": "OK",
-              "description": "Should return a list of elements that respect predicates",
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Contrat"
-              }
-            }
-          },
-          "206": {
-            "description": "Should return a partial list of elements event if it is empty",
-            "schema": {
-              "title": "Contrat",
-              "description": "Should return a list of elements that respect predicates",
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Contrat"
-              }
-            }
-          },
-          "400": {
-            "description": "When one of the parameter is malformed",
-            "schema": {
-              "title":"Bad Request",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "403": {
-            "description": "When authenticated user have not enough rights to modify user's details",
-            "schema": {
-              "title":"Forbidden",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "500": {
-            "description": "When a server error occurred",
-            "schema": {
-              "title":"Internal Server Error",
-              "description": "Should specified error code and human readable explanation",
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "501": {
-            "description": "When this functionnality is not implemented",
-            "schema": {
-              "title":"Not Implemented",
               "description": "Should specified error code and human readable explanation",
               "$ref": "#/definitions/Error"
             }
@@ -1701,262 +340,22 @@
     }
   },
   "definitions": {
-    "Customer": {
+    "Demande": {
       "properties": {
-        "codeClient": {
-          "description": "customer identifier",
-          "type": "integer"
-        },
-        "numeroTvaIntraComUe": {
-          "description": "tax number",
-          "type": "string"
-        } ,
-        "estClientDePassage": {
-          "description": "is a passing customer?",
-          "type": "int"
-        },
-        "estClientComptant": {
-          "description": "is a cash customer?",
-          "type": "int"
-        },
-        "civilite": {
-          "description": "title description",
-          "type": "string"
-        },
-        "nomClient": {
-          "description": "customer lastname",
-          "type": "string"
-        },
         "prenomClient": {
-          "description": "customer firstname",
+          "description": "Demande Type",
           "type": "string"
         },
         "codePostal": {
-          "description": "zip code",
+          "description": "Demande Code",
           "type": "integer"
-        },
-        "ville": {
-          "description": "city",
-          "type": "string"
-        },
-        "pays": {
-          "description": "country",
-          "type": "string"
-        },
-        "tel1": {
-          "description": "phone",
-          "type": "integer"
-        },
-        "domicile": {
-          "description": "home phone",
-          "type": "integer"
-        },
-        "mobile": {
-          "description": "cellphone",
-          "type": "integer"
-        },
-        "telecopi": {
-          "description": "bill identifier",
-          "type": "integer"
-        },
-        "email": {
-          "description": "bill identifier",
-          "type": "string"
-        },
-        "siret": {
-          "description": "fax",
-          "type": "string"
-        },
-        "titre": {
-          "description": "title",
-          "type": "string"
-        },
-        "complement": {
-          "description": "complement",
-          "type": "text"
-        },
-        "address": {
-          "description": "address",
-          "type": "text"
-        }
-      }
-    },
-    "Facture": {
-      "properties": {
-        "code": {
-          "description": "bill identifier",
-          "type": "string"
-        }
-      }
-    },
-     "Societe": {
-      "properties": {
-        "code": {
-          "description": "society identifier",
-          "type": "string"
-        }
-      }
-    },
-    "Devise": {
-      "properties": {
-        "code": {
-          "description": "Currency identifier",
-          "type": "string"
-        }
-      }
-    },
-    "User": {
-      "properties": {
-        "code": {
-          "description": "User identifier",
-          "type": "string"
-        }
-      }
-    },
-
-    "Journal": {
-      "properties": {
-        "code": {
-          "description": "Journal's identifier",
-          "type": "string"
-        },
-        "libelle": {
-          "description": "Journal's label",
-          "type": "string"
-        }
-      }
-    },
-
-    "Etablissement": {
-      "properties": {
-        "codeEtablissement": {
-          "description": "etablishment's identifier",
-          "type": "integer"
-        },
-        "codeSociete": {
-          "description": "Society's identifier",
-          "type": "string"
-        },
-        "codeTiers": {
-          "description": "Customer's identifier",
-          "type": "string"
-        },
-        "description": {
-          "description": "Description of etablishment",
-          "type": "string"
-        },
-        "enTeteDocument": {
-          "description": "Document header",
-          "type": "string"
-        }
-      }
-    },
-    "Contrat": {
-      "properties": {
-        "code": {
-          "description": "Contrat identifier",
-          "type": "integer"
-        },
-        "contratCode": {
-          "description": "Alias contrat",
-          "type": "string"
-        },
-        "customerAccount": {
-          "description": "Customer Account",
-          "type": "string"
-        },
-        "customerCode": {
-          "description": "Customer code",
-          "type": "integer"
-        },
-        "createdDate": {
-          "description": "Date creation",
-          "type": "date"
-        },
-        "endDate": {
-          "description": "End date of contrat",
-          "type": "date"
-        },
-        "firstNameCustomer": {
-          "description": "First name of Customer",
-          "type": "string"
-        },
-        "lastNameCustomer": {
-          "description": "Last name of Customer",
-          "type": "string"
-        },
-        "startDate": {
-          "description": "Start date of pact",
-          "type": "date"
-        },
-        "startDateForNextPeriod": {
-          "description": "Start date for next period of pact",
-          "type": "date"
-        },
-        "stateContrat": {
-          "description": "Status of pact",
-          "type": "boolean"
-        },
-        "titleCustomer": {
-          "description": "Title of customer",
-          "type": "string"
-        },
-        "ttcAmountGlobal": {
-          "description": "TTC Amount Global of pact",
-          "type": "float"
-        },
-        "ttcInvoiceEdited": {
-          "description": "TTC invoice edited of pact",
-          "type": "integer"
-        },
-        "userCode": {
-          "description": "User Code",
-          "type": "string"
         }
       }
     },
     "Entity": {
       "properties": {
-        "kind": {
+        "id": {
           "type": "string"
-        },
-        "reference": {
-          "type": "string"
-        }
-      }
-    },
-    "LinkType": {
-      "properties": {
-        "href": {
-          "type": "string",
-          "format": "uri"
-        },
-        "rel": {
-          "type": "string"
-        },
-        "title": {
-          "type": "string"
-        },
-        "method": {
-          "type": "string",
-          "default": "GET",
-          "enum": [
-            "GET",
-            "POST",
-            "PUT",
-            "DELETE"
-          ]
-        },
-        "type": {
-          "type": "string",
-          "default": "application/json",
-          "enum": [
-            "application/json",
-            "application/xml"
-          ]
-        },
-        "expand": {
-          "type": "object"
         }
       }
     },

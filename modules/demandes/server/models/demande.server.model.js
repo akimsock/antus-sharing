@@ -25,6 +25,10 @@ var DemandeSchema = new Schema({
     default: '',
     trim: true
   },
+  id: {
+    type: Number,
+    default: 0
+  },
   user: {
     type: Schema.ObjectId,
     ref: 'User'

@@ -25,10 +25,10 @@ exports.invokeRolesPolicies = function () {
     roles: ['user'],
     allows: [{
       resources: '/api/demandes',
-      permissions: ['get']
+      permissions: '*'
     }, {
       resources: '/api/demandes/:demandeId',
-      permissions: ['get']
+      permissions: '*'
     }]
   }, {
     roles: ['guest'],
@@ -47,7 +47,6 @@ exports.invokeRolesPolicies = function () {
  */
 exports.isAllowed = function (req, res, next) {
   var roles = (req.user) ? req.user.roles : ['guest'];
-
   // If an demande is being processed and the current user created it then allow any manipulation
   if (req.demande && req.user && req.demande.user && req.demande.user.id === req.user.id) {
     return next();

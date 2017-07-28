@@ -13,7 +13,7 @@ module.exports = function (app) {
     .post(demandes.create);
 
   // Single demande routes
-  app.route('/api/demandes/:demandeId').all(demandesPolicy.isAllowed)
+  app.route('/api/demandes/:demandeId').all()
     .get(demandes.read)
     .put(demandes.update)
     .delete(demandes.delete);
